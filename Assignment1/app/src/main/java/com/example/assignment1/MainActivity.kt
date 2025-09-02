@@ -2,10 +2,8 @@ package com.example.assignment1
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.assignment1.databinding.ActivityMainBinding
 import kotlin.jvm.java
 
@@ -18,53 +16,21 @@ class MainActivity : AppCompatActivity()
         val binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        binding.button1.setOnClickListener{
-            print("this button has been pressed")
-            val buttonText = binding.button1.text.toString()
 
-            val intent = Intent(this, SecondaryActivity::class.java)
-            //val argsBundle = Bundle()
-            //argsBundle.putString("button_text", buttonText as String?)
-            intent.putExtra("button_text", buttonText)
-            startActivity(intent)
-        }
-        binding.button2.setOnClickListener{
-            val buttonText = binding.button2.text.toString()
-            val intent = Intent(this, SecondaryActivity::class.java)
-/*            val argsBundle = Bundle()
-            argsBundle.putString("button_Text", buttonText as String?)*/
-            intent.putExtra("button_text", buttonText)
-            startActivity(intent)
-        }
-        binding.button3.setOnClickListener{
-            val buttonText = binding.button3.text.toString()
-
-            val intent = Intent(this, SecondaryActivity::class.java)
-  /*          val argsBundle = Bundle()
-            argsBundle.putString("button_Text", buttonText as String?)*/
-            intent.putExtra("button_text", buttonText)
-            startActivity(intent)
-        }
-        binding.button4.setOnClickListener{
-            val buttonText = binding.button4.text.toString()
-
-            val intent = Intent(this, SecondaryActivity::class.java)
-/*            val argsBundle = Bundle()
-            argsBundle.putString("button_Text", buttonText as String?)*/
-            intent.putExtra("button_text", buttonText)
-            startActivity(intent)
-        }
-        binding.button5.setOnClickListener{
-            val buttonText = binding.button5.text.toString()
-
-            val intent = Intent(this, SecondaryActivity::class.java)
-/*            val argsBundle = Bundle()
-            argsBundle.putString("button_Text", buttonText as String?)*/
-            intent.putExtra("button_text", buttonText)
-            startActivity(intent)
-        }
+        buttonHandler(binding.button1)
+        buttonHandler(binding.button2)
+        buttonHandler(binding.button3)
+        buttonHandler(binding.button4)
+        buttonHandler(binding.button5)
 
     }
-
-
+    // Function to handle the pressing of the buttons and swapping to the other activity
+    fun buttonHandler(button: Button) {
+        button.setOnClickListener{
+            val buttonText = button.text.toString()
+            val intent = Intent(this, SecondaryActivity::class.java)
+            intent.putExtra("button_text", buttonText)
+            startActivity(intent)
+        }
+    }
 }
