@@ -8,7 +8,6 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.11.0"
 composeBom = "2024.09.00"
-roomCompiler = "2.51.1"
 roomRuntime = "2.8.2"
 
 [libraries]
