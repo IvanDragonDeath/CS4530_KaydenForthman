@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-
+import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,16 +26,46 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+// Class to store all the data related to the course
+data class Course(val id: Int = 0,
+                  val department: String,
+                  val number: String,
+                  val location: String
+){
+    val name get() = "$department $number"
+}
+
+// View Model Class
+class MyViewModel : ViewModel()
+{
+    private var nextId = 1
+    private val _courses = MutableStateFlow<List<Course>>(emptyList())
+    val courses: StateFlow<List<Course>> = _courses
+
+    fun addCourse (number: String, department: String, location: String){
+        val course = Course(id = nextId++, department = department, number = number, location = location)
+        _courses.value = _courses.value + course
+    }
+    fun editCourse (updatedCourse: Course){
+        _courses.value = _courses.value.map { course ->
+            if (course.id == updatedCourse.id) updatedCourse else course
+        }
+    }
+    fun deleteCourse (course: Course){
+        _courses.value = _courses.value.filter {it.id != course.id}
+    }
+
+}
 
 class MainActivity : ComponentActivity() {
+    private val viewModel = MyViewModel();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val database = CourseDatabase.getDatabase(applicationContext)
-        val repository = CourseRepository.getInstance(database.courseDao())
-        val viewModelFactory = MyViewModelFactory(repository)
-        val viewModel: MyViewModel = ViewModelProvider(this, viewModelFactory)[MyViewModel::class.java]
         enableEdgeToEdge()
         setContent {
             CourseApp(viewModel)
@@ -56,7 +86,7 @@ fun CourseApp(viewModel: MyViewModel) {
             onAdd = { department, number, location ->
                 viewModel.addCourse(
                     department, number, location)
-                showAddCourse = false
+                showAddCourse = false;
             },
             onCancel = { showAddCourse = false}
         )
@@ -67,11 +97,11 @@ fun CourseApp(viewModel: MyViewModel) {
             course = selectedCourse!!,
             onDelete = {
                 viewModel.deleteCourse(it)
-                selectedCourse = null
+                selectedCourse = null;
             },
             onBack = {selectedCourse = null},
             onEdit = { course ->
-                editedCourse = course
+                editedCourse = course;
                 selectedCourse = null
             }
         )
@@ -82,7 +112,7 @@ fun CourseApp(viewModel: MyViewModel) {
             course = editedCourse!!,
             onSave = { course ->
                 viewModel.editCourse(course)
-                editedCourse = null
+                editedCourse = null;
             },
             onCancel = { editedCourse = null}
         )
@@ -117,11 +147,12 @@ fun ListScreen(
                         .clickable { onCourseClick(course) }
                         .padding(16.dp)
                 )
+                Divider()
             }
         }
     }
 }
-// edit the details of the currently selected course
+// edit the details of the crrently selected course
 @Composable
 fun EditCourseScreen (
     course: Course,
@@ -234,9 +265,7 @@ fun DetailsScreen(
         Text("Department: ${course.department}")
         Text("Course Number: ${course.number}")
         Text("Location: ${course.location}")
-
         Spacer(modifier = Modifier.height(24.dp))
-
         Row {
             Button(onClick = onBack) {
                 Text("Back")
