@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MarbleScreen(viewModel: MarbleViewModel) {
-    val position = viewModel.position.collectAsState()
+    val position by viewModel.position.collectAsState()
     val marbleSize = 40.dp
 
     BoxWithConstraints(
@@ -55,8 +55,8 @@ fun MarbleScreen(viewModel: MarbleViewModel) {
             viewModel.setScreenSize(screenWidthPx, screenHeightPx)
         }
 
-        val xOffset = with(density) { position.value.first.toDp() - marbleRadiusPx.toDp() }
-        val yOffset = with(density) { position.value.second.toDp() - marbleRadiusPx.toDp() }
+        val xOffset = with(density) { position.first.toDp() - marbleRadiusPx.toDp() }
+        val yOffset = with(density) { position.second.toDp() - marbleRadiusPx.toDp() }
 
         Box(
             modifier = Modifier
